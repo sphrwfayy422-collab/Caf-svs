@@ -1,2 +1,299 @@
-# Caf-svs
-سایت منو کافه
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SVS Exclusive Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
+                    colors: {
+                        svs: {
+                            bg: '#000000',      // Pure Black
+                            card: '#111111',    // Dark Gray
+                            gold: '#C5A059',    // Elegant Gold
+                            text: '#EAEAEA',
+                            muted: '#999999'
+                        }
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 15px rgba(197, 160, 89, 0.2)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #000; color: #EAEAEA; -webkit-tap-highlight-color: transparent; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Glass Effect for Header */
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .category-pill.active {
+            background: #C5A059;
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+            border-color: #C5A059;
+        }
+
+        /* Modal Image Gradient */
+        .modal-gradient {
+            background: linear-gradient(to top, #111111 0%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-svs-gold selection:text-black">
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center transition-opacity duration-1000">
+        <div class="relative">
+            <div class="absolute inset-0 bg-svs-gold blur-3xl opacity-20 animate-pulse"></div>
+            <h1 class="text-6xl font-black text-white tracking-tighter relative z-10">SVS</h1>
+        </div>
+        <p class="text-svs-gold tracking-[0.4em] text-xs mt-4 uppercase">Luxury Lounge</p>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app" class="hidden opacity-0 transition-opacity duration-1000 min-h-screen">
+        
+        <!-- HEADER -->
+        <header class="fixed top-0 left-0 right-0 z-40 glass-nav pt-4 pb-2">
+            <!-- Top Bar -->
+            <div class="px-5 flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white">کافه اس‌وی‌اس</h2>
+                    <p class="text-[10px] text-svs-muted uppercase tracking-widest">Digital Menu</p>
+                </div>
+                <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center bg-white/5">
+                    <i class="fas fa-gem text-svs-gold"></i>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="flex overflow-x-auto hide-scroll gap-3 px-5 pb-3" id="categories-wrapper">
+                <!-- Injected via JS -->
+            </div>
+        </header>
+
+        <!-- SPACER -->
+        <div class="h-36"></div>
+
+        <!-- MENU GRID -->
+        <main class="px-4 pb-10 grid grid-cols-1 gap-6" id="menu-grid">
+            <!-- Items Injected via JS -->
+        </main>
+
+    </div>
+
+    <!-- FULL SCREEN ITEM MODAL -->
+    <div id="modal" class="fixed inset-0 z-[60] hidden">
+        
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-md transition-opacity duration-300 opacity-0" id="modal-backdrop"></div>
+
+        <!-- Content Container -->
+        <div class="absolute inset-x-0 bottom-0 top-0 overflow-y-auto transform translate-y-full transition-transform duration-500 cubic-bezier(0.32, 0.72, 0, 1)" id="modal-panel">
+            
+            <div class="min-h-full relative bg-black flex flex-col">
+                
+                <!-- Close Button -->
+                <button onclick="closeModal()" class="absolute top-6 right-6 z-20 w-12 h-12 rounded-full bg-black/50 backdrop-blur-lg border border-white/20 text-white flex items-center justify-center shadow-2xl active:scale-90 transition-transform">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+
+                <!-- Big Image -->
+                <div class="relative h-[55vh] w-full shrink-0">
+                    <img id="modal-img" src="" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 modal-gradient"></div>
+                </div>
+
+                <!-- Info Section -->
+                <div class="flex-1 px-6 relative -top-12">
+                    <!-- Title & Price Block -->
+                    <div class="bg-svs-card border border-white/10 rounded-3xl p-6 shadow-2xl backdrop-blur-xl">
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 id="modal-title" class="text-2xl font-bold text-white leading-tight w-2/3"></h2>
+                            <span id="modal-price" class="text-xl font-bold text-svs-gold whitespace-nowrap"></span>
+                        </div>
+                        <span id="modal-cat" class="text-[10px] text-gray-400 uppercase tracking-wider bg-white/5 px-2 py-1 rounded"></span>
+                        
+                        <div class="mt-6 border-t border-white/5 pt-4">
+                            <p class="text-svs-muted text-xs mb-2 uppercase tracking-widest">توضیحات</p>
+                            <p id="modal-desc" class="text-gray-300 leading-7 text-sm font-light text-justify"></p>
+                        </div>
+                    </div>
+
+                    <!-- Extra Info (Visual Only) -->
+                    <div class="mt-6 grid grid-cols-3 gap-3 text-center mb-8">
+                        <div class="bg-svs-card border border-white/5 rounded-2xl p-3">
+                            <i class="fas fa-fire text-svs-gold mb-1"></i>
+                            <p class="text-[10px] text-gray-500">تازه</p>
+                        </div>
+                        <div class="bg-svs-card border border-white/5 rounded-2xl p-3">
+                            <i class="fas fa-clock text-svs-gold mb-1"></i>
+                            <p class="text-[10px] text-gray-500">۱۰-۱۵ دقیقه</p>
+                        </div>
+                        <div class="bg-svs-card border border-white/5 rounded-2xl p-3">
+                            <i class="fas fa-star text-svs-gold mb-1"></i>
+                            <p class="text-[10px] text-gray-500">ویژه</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const categories = [
+            { id: 'all', name: 'همه آیتم‌ها' },
+            { id: 'coffee', name: 'قهوه و بار گرم' },
+            { id: 'cold', name: 'نوشیدنی سرد' },
+            { id: 'food', name: 'غذا و پاستا' },
+            { id: 'breakfast', name: 'صبحانه' },
+            { id: 'sweets', name: 'کیک و دسر' }
+        ];
+
+        const menuItems = [
+            // FOOD
+            { id: 1, cat: 'food', title: 'پاستا آلفردو چیکن', price: '۲۱۰,۰۰۰', desc: 'پاستا پنه ایتالیایی غرق در سس آلفردو خامه ای غلیظ، همراه با سینه مرغ گریل شده مرینیت شده، قارچ تفت داده شده و پنیر پارمزان رنده شده.', img: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=800&q=80' },
+            { id: 2, cat: 'food', title: 'SVS برگر مخصوص', price: '۲۵۰,۰۰۰', desc: 'برگر دست‌ساز ۱۵۰ گرمی گوشت خالص، بیکن گوساله، پنیر گودا آب شده، پیاز کاراملی، کاهو فرانسوی و سس مخصوص سرآشپز.', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80' },
+            { id: 3, cat: 'food', title: 'پنینی رست بیف', price: '۱۹۵,۰۰۰', desc: 'نان چاودار ترد، گوشت ریش شده آرام پز، پنیر موزارلا، قارچ و سس پستو.', img: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80' },
+            
+            // BREAKFAST
+            { id: 4, cat: 'breakfast', title: 'صبحانه انگلیسی رویال', price: '۲۲۰,۰۰۰', desc: 'یک سینی کامل شامل لوبیا گرم، سوسیس انگشتی، بیکن سرخ شده، نیمرو، قارچ کبابی و نان تست کره‌ای.', img: 'https://images.unsplash.com/photo-1533089862017-5614ec95e911?auto=format&fit=crop&w=800&q=80' },
+            
+            // COFFEE
+            { id: 5, cat: 'coffee', title: 'لاته آرت', price: '۸۵,۰۰۰', desc: 'اسپرسو دبل شات ۱۰۰٪ عربیکا ترکیب شده با شیر بخار داده شده و فوم مخملی با طراحی لاته آرت.', img: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&w=800&q=80' },
+            { id: 6, cat: 'coffee', title: 'آمریکانو', price: '۶۵,۰۰۰', desc: 'اسپرسو رقیق شده با آب داغ، مناسب برای کسانی که طعم خالص قهوه را دوست دارند.', img: 'https://images.unsplash.com/photo-1551030173-122f528bb8a8?auto=format&fit=crop&w=800&q=80' },
+            
+            // COLD
+            { id: 7, cat: 'cold', title: 'موهیتو کلاسیک', price: '۹۵,۰۰۰', desc: 'ترکیب خنک‌کننده لیموی تازه، نعنای معطر، شکر قهوه‌ای و آب گازدار.', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80' },
+            { id: 8, cat: 'cold', title: 'شیک نوتلا', price: '۱۳۰,۰۰۰', desc: 'بستنی وانیل، شیر تازه و حجم زیادی نوتلا اصل فندقی.', img: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=800&q=80' },
+            
+            // SWEETS
+            { id: 9, cat: 'sweets', title: 'چیز کیک نیویورکی', price: '۹۰,۰۰۰', desc: 'برشی از کیک پنیر کلاسیک با پایه بیسکویت ترد و تاپینگ مربای آلبالو.', img: 'https://images.unsplash.com/photo-1524351199678-941a58a3df50?auto=format&fit=crop&w=800&q=80' }
+        ];
+
+        // --- APP LOGIC ---
+
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                document.getElementById('splash').style.pointerEvents = 'none';
+                
+                document.getElementById('app').classList.remove('hidden');
+                requestAnimationFrame(() => document.getElementById('app').style.opacity = '1');
+                
+                initMenu();
+            }, 2000);
+        };
+
+        function initMenu() {
+            renderCategories('all');
+            renderItems(menuItems);
+        }
+
+        function renderCategories(activeId) {
+            const wrapper = document.getElementById('categories-wrapper');
+            wrapper.innerHTML = categories.map(c => `
+                <button onclick="filterCategory('${c.id}')" 
+                    class="category-pill ${c.id === activeId ? 'active' : 'border-white/10 text-gray-400'} 
+                    whitespace-nowrap px-6 py-2.5 rounded-full border text-sm transition-all duration-300 hover:border-white/30">
+                    ${c.name}
+                </button>
+            `).join('');
+        }
+
+        function filterCategory(id) {
+            renderCategories(id);
+            const items = id === 'all' ? menuItems : menuItems.filter(i => i.cat === id);
+            
+            const grid = document.getElementById('menu-grid');
+            grid.style.opacity = '0';
+            grid.style.transform = 'translateY(10px)';
+            
+            setTimeout(() => {
+                renderItems(items);
+                grid.style.opacity = '1';
+                grid.style.transform = 'translateY(0)';
+            }, 200);
+        }
+
+        function renderItems(items) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = items.map((item, idx) => `
+                <div onclick="openModal(${item.id})" class="group relative bg-svs-card rounded-3xl overflow-hidden border border-white/5 active:scale-[0.98] transition-transform duration-300 animate-slide-up" style="animation-delay: ${idx * 50}ms">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="${item.img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 right-4 text-left">
+                            <h3 class="text-xl font-bold text-white drop-shadow-md">${item.title}</h3>
+                            <span class="text-svs-gold font-bold text-sm">${item.price} تومان</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- MODAL ---
+        const modal = document.getElementById('modal');
+        const modalPanel = document.getElementById('modal-panel');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+
+        function openModal(id) {
+            const item = menuItems.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-price').innerText = item.price + ' تومان';
+            document.getElementById('modal-desc').innerText = item.desc;
+            document.getElementById('modal-img').src = item.img;
+            document.getElementById('modal-cat').innerText = categories.find(c => c.id === item.cat).name;
+
+            modal.classList.remove('hidden');
+            
+            // Animation
+            requestAnimationFrame(() => {
+                modalBackdrop.style.opacity = '1';
+                modalPanel.style.transform = 'translateY(0)';
+            });
+        }
+
+        function closeModal() {
+            modalBackdrop.style.opacity = '0';
+            modalPanel.style.transform = 'translateY(100%)';
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+    </script>
+</body>
+</html>
+
+
+
